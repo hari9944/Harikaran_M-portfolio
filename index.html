@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harikaran M — Software Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy: #0B1E33;
+    --navy-2: #10263F;
+    --ink: #132A45;
+    --paper: #F5F7FA;
+    --paper-2: #ECEFF3;
+    --slate: #5C7085;
+    --gold: #C99A44;
+    --teal: #2DD4BF;
+    --line: rgba(255,255,255,0.09);
+    --line-dark: rgba(11,30,51,0.10);
+    --radius: 6px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    color:var(--navy);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important;}
+  }
+  a{color:inherit; text-decoration:none;}
+  h1,h2,h3{font-family:'Fraunces', serif; letter-spacing:-0.01em;}
+  .mono{font-family:'IBM Plex Mono', monospace;}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 32px;}
+  ::selection{background:var(--gold); color:var(--navy);}
+
+  /* progress bar */
+  #progress{position:fixed; top:0; left:0; height:2px; background:var(--gold); width:0%; z-index:999; transition:width 0.1s linear;}
+
+  /* NAV */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background:rgba(11,30,51,0.85); backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  nav{display:flex; justify-content:space-between; align-items:center; padding:18px 32px; max-width:1120px; margin:0 auto;}
+  .logo{color:var(--paper); font-family:'Fraunces', serif; font-size:1.15rem; font-weight:600; display:flex; align-items:center; gap:8px;}
+  .logo .dot{width:7px; height:7px; border-radius:50%; background:var(--teal); box-shadow:0 0 8px var(--teal); animation:pulse 2.4s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:0.35;}}
+  .navlinks{display:flex; gap:32px; font-size:0.85rem;}
+  .navlinks a{color:rgba(245,247,250,0.65); font-family:'IBM Plex Mono', monospace; font-size:0.78rem; letter-spacing:0.03em; transition:color 0.2s;}
+  .navlinks a:hover{color:var(--gold);}
+  .navlinks .idx{color:var(--gold); margin-right:4px;}
+  @media(max-width:760px){.navlinks{display:none;}}
+
+  /* HERO */
+  .hero{
+    min-height:100vh;
+    background:var(--navy);
+    color:var(--paper);
+    position:relative;
+    display:flex; align-items:center;
+    padding:120px 0 80px;
+    overflow:hidden;
+  }
+  #nodeCanvas{position:absolute; inset:0; width:100%; height:100%; opacity:0.55;}
+  .hero-inner{position:relative; z-index:2; display:grid; grid-template-columns:1.15fr 0.85fr; gap:56px; align-items:center; width:100%;}
+  @media(max-width:900px){.hero-inner{grid-template-columns:1fr;}}
+
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace; font-size:0.75rem; color:var(--teal);
+    letter-spacing:0.12em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:22px;
+    opacity:0; animation:fadeUp 0.7s ease forwards; animation-delay:0.1s;
+  }
+  .eyebrow::before{content:''; width:24px; height:1px; background:var(--teal);}
+  .hero h1{
+    font-size:clamp(2.6rem, 6vw, 4.4rem); font-weight:600; line-height:1.03; margin-bottom:18px;
+    opacity:0; animation:fadeUp 0.8s ease forwards; animation-delay:0.22s;
+  }
+  .hero h1 span{color:var(--gold); font-style:italic; font-weight:500;}
+  .hero .role{
+    font-size:1.15rem; color:rgba(245,247,250,0.72); max-width:520px; margin-bottom:34px; font-weight:400;
+    opacity:0; animation:fadeUp 0.8s ease forwards; animation-delay:0.34s;
+  }
+  .hero .role strong{color:var(--paper); font-weight:600;}
+  .hero-cta{display:flex; gap:16px; flex-wrap:wrap; opacity:0; animation:fadeUp 0.8s ease forwards; animation-delay:0.46s;}
+  @keyframes fadeUp{from{opacity:0; transform:translateY(18px);} to{opacity:1; transform:translateY(0);}}
+
+  .btn{
+    padding:13px 26px; border-radius:2px; font-size:0.85rem; font-weight:600; letter-spacing:0.02em;
+    display:inline-flex; align-items:center; gap:8px; transition:all 0.25s ease; cursor:pointer; border:1px solid transparent;
+  }
+  .btn-primary{background:var(--gold); color:var(--navy);}
+  .btn-primary:hover{background:#dbae5c; transform:translateY(-2px); box-shadow:0 8px 20px rgba(201,154,68,0.25);}
+  .btn-ghost{border-color:rgba(245,247,250,0.28); color:var(--paper);}
+  .btn-ghost:hover{border-color:var(--teal); color:var(--teal); transform:translateY(-2px);}
+
+  /* terminal panel */
+  .panel{
+    background:var(--navy-2); border:1px solid var(--line); border-radius:8px; overflow:hidden;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.5);
+    opacity:0; animation:fadeUp 0.9s ease forwards; animation-delay:0.5s;
+  }
+  .panel-bar{display:flex; align-items:center; gap:7px; padding:12px 16px; background:rgba(255,255,255,0.03); border-bottom:1px solid var(--line);}
+  .panel-bar span{width:9px; height:9px; border-radius:50%; background:rgba(245,247,250,0.18);}
+  .panel-bar .lbl{margin-left:8px; font-family:'IBM Plex Mono',monospace; font-size:0.7rem; color:rgba(245,247,250,0.4);}
+  .panel-body{padding:22px 20px; font-family:'IBM Plex Mono', monospace; font-size:0.82rem; color:#B9C6D6;}
+  .panel-body .k{color:#7DD3C0;}
+  .panel-body .s{color:var(--gold);}
+  .panel-body .c{color:rgba(185,198,214,0.4);}
+  .cursor{display:inline-block; width:7px; height:14px; background:var(--teal); margin-left:2px; animation:blink 1s step-end infinite; vertical-align:middle;}
+  @keyframes blink{0%,49%{opacity:1;} 50%,100%{opacity:0;}}
+  .typeline{opacity:0; white-space:pre;}
+
+  /* SECTIONS */
+  section{padding:110px 0; scroll-margin-top:90px;}
+  #about, #experience, #skills, #projects, #education, #contact{scroll-margin-top:90px;}
+  .section-head{margin-bottom:56px; display:flex; align-items:baseline; gap:16px;}
+  .section-num{font-family:'IBM Plex Mono', monospace; color:var(--gold); font-size:0.85rem;}
+  .section-head h2{font-size:clamp(1.8rem,3.4vw,2.5rem); font-weight:600;}
+  .section-line{flex:1; height:1px; background:var(--line-dark);}
+
+  .reveal{opacity:0; transform:translateY(26px); transition:opacity 0.7s ease, transform 0.7s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  /* ABOUT */
+  .about-grid{display:grid; grid-template-columns:1.3fr 1fr; gap:60px; align-items:start;}
+  @media(max-width:800px){.about-grid{grid-template-columns:1fr;}}
+  .about-grid p{font-size:1.06rem; color:#33455C; margin-bottom:18px; max-width:60ch;}
+  .info-card{background:var(--ink); color:var(--paper); padding:28px; border-radius:8px;}
+  .info-row{display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--line); font-size:0.88rem;}
+  .info-row:last-child{border-bottom:none;}
+  .info-row .l{color:rgba(245,247,250,0.5); font-family:'IBM Plex Mono',monospace; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.06em;}
+  .info-row a:hover{color:var(--teal);}
+
+  /* EXPERIENCE TIMELINE */
+  .timeline{position:relative; padding-left:36px; border-left:2px solid var(--line-dark);}
+  .tl-item{position:relative; padding-bottom:44px;}
+  .tl-item:last-child{padding-bottom:0;}
+  .tl-item::before{content:''; position:absolute; left:-42px; top:4px; width:12px; height:12px; border-radius:50%; background:var(--gold); border:3px solid var(--paper); box-shadow:0 0 0 2px var(--gold);}
+  .tl-role{font-size:1.3rem; font-weight:600; font-family:'Fraunces',serif;}
+  .tl-meta{display:flex; gap:14px; flex-wrap:wrap; margin:6px 0 16px; font-family:'IBM Plex Mono',monospace; font-size:0.78rem; color:var(--slate);}
+  .tl-meta .tag{color:var(--gold);}
+  .tl-item ul{padding-left:20px; color:#33455C;}
+  .tl-item li{margin-bottom:8px; font-size:0.96rem;}
+
+  /* SKILLS */
+  .skills-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:26px;}
+  @media(max-width:800px){.skills-grid{grid-template-columns:1fr 1fr;}}
+  @media(max-width:520px){.skills-grid{grid-template-columns:1fr;}}
+  .skill-card{background:#fff; border:1px solid var(--line-dark); border-radius:8px; padding:24px; transition:transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;}
+  .skill-card:hover{transform:translateY(-4px); box-shadow:0 16px 32px -14px rgba(11,30,51,0.18); border-color:var(--gold);}
+  .skill-card h3{font-size:0.72rem; font-family:'IBM Plex Mono',monospace; text-transform:uppercase; letter-spacing:0.08em; color:var(--slate); margin-bottom:14px; font-weight:600;}
+  .chip-row{display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{background:var(--paper-2); color:var(--navy); font-size:0.78rem; padding:6px 12px; border-radius:20px; font-family:'IBM Plex Mono',monospace;}
+
+  /* PROJECTS */
+  .proj-card{background:var(--navy); color:var(--paper); border-radius:10px; padding:38px; margin-bottom:28px; position:relative; overflow:hidden;}
+  .proj-card::before{content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:var(--gold);}
+  .proj-top{display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px; margin-bottom:18px;}
+  .proj-top h3{font-size:1.5rem; font-weight:600;}
+  .proj-status{font-family:'IBM Plex Mono',monospace; font-size:0.7rem; color:var(--teal); border:1px solid rgba(45,212,191,0.35); padding:5px 11px; border-radius:20px; white-space:nowrap;}
+  .proj-card ul{padding-left:20px; color:rgba(245,247,250,0.75); margin:16px 0 20px;}
+  .proj-card li{margin-bottom:9px; font-size:0.95rem;}
+  .tech-row{display:flex; flex-wrap:wrap; gap:8px;}
+  .tech-chip{font-family:'IBM Plex Mono',monospace; font-size:0.72rem; background:rgba(245,247,250,0.06); border:1px solid var(--line); color:#B9C6D6; padding:6px 11px; border-radius:4px;}
+
+  /* EDUCATION / CERTS */
+  .split{display:grid; grid-template-columns:1fr 1fr; gap:48px;}
+  @media(max-width:760px){.split{grid-template-columns:1fr;}}
+  .edu-item{padding:22px 0; border-bottom:1px solid var(--line-dark);}
+  .edu-item:last-child{border-bottom:none;}
+  .edu-item h4{font-family:'Fraunces',serif; font-size:1.1rem; margin-bottom:4px;}
+  .edu-item .sub{color:var(--slate); font-size:0.88rem;}
+  .edu-item .date{font-family:'IBM Plex Mono',monospace; font-size:0.75rem; color:var(--gold); margin-top:6px; display:block;}
+  .cert-item{display:flex; align-items:center; gap:14px; padding:16px 18px; background:#fff; border:1px solid var(--line-dark); border-radius:8px; margin-bottom:14px; transition:border-color 0.2s;}
+  .cert-item:hover{border-color:var(--gold);}
+  .cert-badge{width:34px; height:34px; border-radius:50%; background:var(--paper-2); display:flex; align-items:center; justify-content:center; color:var(--gold); font-weight:700; font-family:'IBM Plex Mono',monospace; font-size:0.8rem; flex-shrink:0;}
+  .cert-item h4{font-size:0.95rem; font-weight:600;}
+  .cert-item .sub{font-size:0.8rem; color:var(--slate);}
+
+  /* CONTACT / FOOTER */
+  footer{background:var(--navy); color:var(--paper); padding:100px 0 40px; position:relative;}
+  .cta-block{text-align:center; margin-bottom:80px;}
+  .cta-block .eyebrow{justify-content:center;}
+  .cta-block .eyebrow::before{display:none;}
+  .cta-block h2{font-size:clamp(2rem,5vw,3.2rem); margin-bottom:26px;}
+  .cta-block .email-btn{font-family:'IBM Plex Mono',monospace; font-size:1.05rem; color:var(--gold); border-bottom:1px solid rgba(201,154,68,0.4); padding-bottom:4px; transition:color 0.2s, border-color 0.2s;}
+  .cta-block .email-btn:hover{color:#fff; border-color:#fff;}
+  .foot-bottom{display:flex; justify-content:space-between; align-items:center; padding-top:32px; border-top:1px solid var(--line); flex-wrap:wrap; gap:16px;}
+  .foot-links{display:flex; gap:22px; font-family:'IBM Plex Mono',monospace; font-size:0.78rem; color:rgba(245,247,250,0.55);}
+  .foot-links a:hover{color:var(--teal);}
+  .foot-copy{font-size:0.78rem; color:rgba(245,247,250,0.4); font-family:'IBM Plex Mono',monospace;}
+
+  ::-webkit-scrollbar{width:9px;}
+  ::-webkit-scrollbar-track{background:var(--paper);}
+  ::-webkit-scrollbar-thumb{background:#c7cfd9; border-radius:10px;}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<header>
+  <nav>
+    <div class="logo"><span class="dot"></span>Harikaran M</div>
+    <div class="navlinks">
+      <a href="#about"><span class="idx">01</span>About</a>
+      <a href="#experience"><span class="idx">02</span>Experience</a>
+      <a href="#skills"><span class="idx">03</span>Skills</a>
+      <a href="#projects"><span class="idx">04</span>Projects</a>
+      <a href="#education"><span class="idx">05</span>Education</a>
+      <a href="#contact"><span class="idx">06</span>Contact</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero">
+  <canvas id="nodeCanvas"></canvas>
+  <div class="wrap hero-inner">
+    <div>
+      <div class="eyebrow">Available for Java / Full-Stack roles</div>
+      <h1>Harikaran M<br>builds <span>reliable</span><br>backend systems.</h1>
+      <p class="role">Software Engineer specializing in <strong>Java, Spring Boot &amp; Angular</strong> — designing secure APIs, real-time systems, and scalable full-stack applications for production.</p>
+      <div class="hero-cta">
+        <a href="#projects" class="btn btn-primary">View Projects</a>
+        <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-bar"><span></span><span></span><span></span><div class="lbl">profile.json — response</div></div>
+      <div class="panel-body" id="typeTarget"></div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="section-num">01</span>
+      <h2>About</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="about-grid reveal">
+      <div>
+        <p>Software Engineer with 1.5 years of professional experience, currently building responsive, cross-browser email systems in production while maintaining a strong foundation in <strong>Java, Spring Boot, Spring Security, and RESTful APIs</strong>.</p>
+        <p>Hands-on experience developing scalable full-stack applications — from secure authentication layers with JWT and RBAC, to distributed systems using Redis caching and Apache Kafka messaging. Comfortable across the stack with Angular on the frontend and MySQL-backed architectures on the backend.</p>
+        <p>Eager to contribute as a <strong>Java Developer or Full Stack Developer</strong>, with a focus on secure, high-performance, well-architected applications.</p>
+      </div>
+      <div class="info-card">
+        <div class="info-row"><span class="l">Location</span><span>Chennai, India</span></div>
+        <div class="info-row"><span class="l">Email</span><a href="mailto:munuhari33@gmail.com">munuhari33@gmail.com</a></div>
+        <div class="info-row"><span class="l">Phone</span><span>+91 9944790298</span></div>
+        <div class="info-row"><span class="l">LinkedIn</span><a href="https://www.linkedin.com/in/harikaran-m-software-engineer" target="_blank" rel="noopener">View Profile</a></div>
+        <div class="info-row"><span class="l">Status</span><span style="color:var(--teal);">● Open to Work</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="experience" style="background:var(--paper-2);">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="section-num">02</span>
+      <h2>Experience</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="timeline reveal">
+      <div class="tl-item">
+        <div class="tl-role">Associate Software Engineer</div>
+        <div class="tl-meta"><span class="tag">Webberax, Chennai</span><span>Dec 2024 — Jun 2026</span></div>
+        <ul>
+          <li>Developed responsive, cross-browser compatible email templates using HTML5, CSS3, and JavaScript for global email marketing campaigns.</li>
+          <li>Converted UI designs into pixel-perfect, mobile-friendly email templates while ensuring compatibility across major email clients.</li>
+          <li>Optimized email layouts for improved rendering performance and accessibility.</li>
+          <li>Performed testing, debugging, and issue resolution to ensure consistent behavior across devices and email platforms.</li>
+          <li>Collaborated with designers, QA engineers, and stakeholders to deliver marketing campaigns within deadlines.</li>
+          <li>Maintained reusable template structures and adhered to coding standards for efficient development.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="section-num">03</span>
+      <h2>Technical Skills</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="skills-grid reveal">
+      <div class="skill-card">
+        <h3>Programming</h3>
+        <div class="chip-row"><span class="chip">Java</span><span class="chip">SQL</span><span class="chip">TypeScript</span></div>
+      </div>
+      <div class="skill-card">
+        <h3>Frameworks &amp; Libraries</h3>
+        <div class="chip-row"><span class="chip">Spring Boot</span><span class="chip">Spring Security</span><span class="chip">Hibernate</span><span class="chip">Spring Data JPA</span><span class="chip">Angular</span></div>
+      </div>
+      <div class="skill-card">
+        <h3>Architecture &amp; Concepts</h3>
+        <div class="chip-row"><span class="chip">RESTful APIs</span><span class="chip">MVC</span><span class="chip">OOP</span><span class="chip">DSA</span></div>
+      </div>
+      <div class="skill-card">
+        <h3>Auth &amp; Security</h3>
+        <div class="chip-row"><span class="chip">JWT</span><span class="chip">RBAC</span></div>
+      </div>
+      <div class="skill-card">
+        <h3>Database</h3>
+        <div class="chip-row"><span class="chip">MySQL</span><span class="chip">RDBMS</span><span class="chip">ORM Mapping</span><span class="chip">Redis</span></div>
+      </div>
+      <div class="skill-card">
+        <h3>Tools &amp; Infra</h3>
+        <div class="chip-row"><span class="chip">Git</span><span class="chip">GitHub</span><span class="chip">Maven</span><span class="chip">Postman</span><span class="chip">Kafka</span><span class="chip">WebSockets</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects" style="background:var(--paper-2);">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="section-num">04</span>
+      <h2>Projects</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="proj-card reveal">
+      <div class="proj-top">
+        <h3>Multi-Vendor Marketplace &amp; Real-Time Auction System</h3>
+        <span class="proj-status">● Distributed System</span>
+      </div>
+      <p style="color:rgba(245,247,250,0.65); font-size:0.95rem;">A high-throughput, distributed full-stack marketplace with real-time bidding.</p>
+      <ul>
+        <li>Designed a high-throughput, distributed full-stack marketplace using Spring Boot RESTful APIs and an Angular SPA.</li>
+        <li>Built a responsive vendor dashboard using RxJS observables and Behavior Subjects for real-time state management.</li>
+        <li>Implemented real-time, low-latency live bidding and notifications via Spring WebSockets (STOMP) with Angular.</li>
+        <li>Extended Spring Security and JWT for multi-tenant RBAC, securing separate pathways for Admins, Vendors, and Customers.</li>
+        <li>Used Redis as a distributed caching layer to reduce database load and latency on heavy catalog queries.</li>
+        <li>Implemented Apache Kafka as an event-driven broker for background order processing and inventory updates.</li>
+      </ul>
+      <div class="tech-row">
+        <span class="tech-chip">Java</span><span class="tech-chip">Spring Boot</span><span class="tech-chip">Angular</span><span class="tech-chip">TypeScript</span><span class="tech-chip">Spring Security</span><span class="tech-chip">JWT</span><span class="tech-chip">MySQL</span><span class="tech-chip">Redis</span><span class="tech-chip">WebSockets</span><span class="tech-chip">Apache Kafka</span>
+      </div>
+    </div>
+
+    <div class="proj-card reveal">
+      <div class="proj-top">
+        <h3>E-Commerce Backend System</h3>
+        <span class="proj-status">● REST API</span>
+      </div>
+      <p style="color:rgba(245,247,250,0.65); font-size:0.95rem;">A scalable, secure backend for product, cart, and order management.</p>
+      <ul>
+        <li>Designed and developed a scalable RESTful backend using Spring Boot and MySQL following enterprise-level architecture.</li>
+        <li>Implemented secure authentication and authorization using Spring Security and JWT.</li>
+        <li>Developed REST APIs for user management, product catalog, shopping cart, and order processing.</li>
+        <li>Integrated the Stripe Payment Gateway with transactional rollback mechanisms for payment consistency.</li>
+        <li>Tested APIs using Postman and documented endpoints using Swagger, following clean, modular architecture.</li>
+      </ul>
+      <div class="tech-row">
+        <span class="tech-chip">Java</span><span class="tech-chip">Spring Boot</span><span class="tech-chip">Spring Security</span><span class="tech-chip">Hibernate</span><span class="tech-chip">JWT</span><span class="tech-chip">MySQL</span><span class="tech-chip">Stripe API</span><span class="tech-chip">Maven</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="education">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="section-num">05</span>
+      <h2>Education &amp; Certifications</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="split reveal">
+      <div>
+        <h3 style="font-size:0.78rem; font-family:'IBM Plex Mono',monospace; text-transform:uppercase; letter-spacing:0.08em; color:var(--slate); margin-bottom:8px;">Education</h3>
+        <div class="edu-item">
+          <h4>B.E — Computer Science &amp; Engineering</h4>
+          <div class="sub">EGS Pillay Engineering College, Nagapattinam</div>
+          <span class="date">Jun 2020 — Apr 2024</span>
+        </div>
+        <div class="edu-item">
+          <h4>SSLC &amp; HSC — Maths &amp; Computer Science</h4>
+          <div class="sub">Government Higher Secondary School, Sankaranpandal</div>
+          <span class="date">Jun 2017 — Apr 2020</span>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-size:0.78rem; font-family:'IBM Plex Mono',monospace; text-transform:uppercase; letter-spacing:0.08em; color:var(--slate); margin-bottom:8px;">Certifications</h3>
+        <div class="cert-item">
+          <div class="cert-badge">01</div>
+          <div><h4>Full Stack Development</h4><div class="sub">Besant Technologies</div></div>
+        </div>
+        <div class="cert-item">
+          <div class="cert-badge">02</div>
+          <div><h4>Data Structures and Algorithms</h4><div class="sub">Udemy</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="cta-block reveal">
+      <div class="eyebrow">06 — Contact</div>
+      <h2>Let's build something<br>reliable together.</h2>
+      <a class="email-btn" href="mailto:munuhari33@gmail.com">munuhari33@gmail.com</a>
+    </div>
+    <div class="foot-bottom">
+      <div class="foot-links">
+        <a href="mailto:munuhari33@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/harikaran-m-software-engineer" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="#" target="_blank" rel="noopener">Portfolio</a>
+        <a href="tel:+919944790298">+91 9944790298</a>
+      </div>
+      <div class="foot-copy">© 2026 Harikaran M · Chennai, India</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // scroll progress
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    document.getElementById('progress').style.width = scrolled + '%';
+  });
+
+  // reveal on scroll
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:0.15});
+  revealEls.forEach(el => io.observe(el));
+
+  // typing effect for terminal panel
+  const lines = [
+    {k:'"name"', v:'"Harikaran M"'},
+    {k:'"role"', v:'"Software Engineer"'},
+    {k:'"stack"', v:'"Java · Spring Boot · Angular"'},
+    {k:'"experience"', v:'"1.5 years"'},
+    {k:'"status"', v:'"200 OK — open_to_work"'}
+  ];
+  const target = document.getElementById('typeTarget');
+  let html = '<span class="c">{</span>\n';
+  target.innerHTML = html;
+
+  function typeLine(idx){
+    if(idx >= lines.length){
+      target.innerHTML += '<span class="c">}</span>';
+      const cur = document.createElement('span');
+      cur.className = 'cursor';
+      target.appendChild(cur);
+      return;
+    }
+    const line = lines[idx];
+    const prefix = '  <span class="k">' + line.k + '</span>: ';
+    const comma = idx < lines.length - 1 ? ',' : '';
+    const full = line.v + comma;
+    let i = 0;
+    const lineSpan = document.createElement('div');
+    target.appendChild(lineSpan);
+    lineSpan.innerHTML = prefix + '<span class="s"></span>';
+    const valSpan = lineSpan.querySelector('.s');
+    const timer = setInterval(() => {
+      valSpan.textContent += full[i];
+      i++;
+      if(i >= full.length){
+        clearInterval(timer);
+        setTimeout(() => typeLine(idx+1), 180);
+      }
+    }, 22);
+  }
+  setTimeout(() => typeLine(0), 900);
+
+  // node network canvas
+  const canvas = document.getElementById('nodeCanvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, nodes = [];
+  function resize(){
+    W = canvas.width = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+  function initNodes(){
+    nodes = [];
+    const count = Math.min(46, Math.floor(W/40));
+    for(let i=0;i<count;i++){
+      nodes.push({
+        x: Math.random()*W, y: Math.random()*H,
+        vx: (Math.random()-0.5)*0.25, vy: (Math.random()-0.5)*0.25,
+        r: Math.random()*1.6+0.8
+      });
+    }
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    for(let i=0;i<nodes.length;i++){
+      const n = nodes[i];
+      n.x += n.vx; n.y += n.vy;
+      if(n.x<0||n.x>W) n.vx*=-1;
+      if(n.y<0||n.y>H) n.vy*=-1;
+    }
+    for(let i=0;i<nodes.length;i++){
+      for(let j=i+1;j<nodes.length;j++){
+        const a=nodes[i], b=nodes[j];
+        const d = Math.hypot(a.x-b.x, a.y-b.y);
+        if(d < 150){
+          ctx.strokeStyle = 'rgba(45,212,191,' + (0.14*(1-d/150)) + ')';
+          ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+        }
+      }
+    }
+    nodes.forEach(n => {
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(201,154,68,0.55)';
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize', () => { resize(); initNodes(); });
+  resize(); initNodes(); draw();
+
+  // smooth nav underline / active state omitted for simplicity
+</script>
+</body>
+</html>
