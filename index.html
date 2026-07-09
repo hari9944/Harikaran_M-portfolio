@@ -68,8 +68,38 @@
     padding:120px 0 80px;
     overflow:hidden;
   }
-  #nodeCanvas{position:absolute; inset:0; width:100%; height:100%; opacity:0.55;}
-  .hero-inner{position:relative; z-index:2; display:grid; grid-template-columns:1.15fr 0.85fr; gap:56px; align-items:center; width:100%;}
+  /* animated video-style background: layered moving gradient blobs + drifting node canvas */
+  .bg-video{position:absolute; inset:0; z-index:0; overflow:hidden;}
+  .bg-video::after{
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(ellipse at center, transparent 0%, var(--navy) 78%);
+    z-index:2;
+  }
+  .blob{
+    position:absolute; border-radius:50%; filter:blur(70px); opacity:0.55; will-change:transform;
+  }
+  .blob-a{width:520px; height:520px; background:radial-gradient(circle, rgba(201,154,68,0.55), transparent 70%); top:-140px; left:-100px; animation:driftA 22s ease-in-out infinite;}
+  .blob-b{width:460px; height:460px; background:radial-gradient(circle, rgba(45,212,191,0.45), transparent 70%); bottom:-160px; right:-80px; animation:driftB 26s ease-in-out infinite;}
+  .blob-c{width:380px; height:380px; background:radial-gradient(circle, rgba(125,211,192,0.3), transparent 70%); top:30%; right:15%; animation:driftC 30s ease-in-out infinite;}
+  @keyframes driftA{
+    0%,100%{transform:translate(0,0) scale(1);}
+    33%{transform:translate(80px,60px) scale(1.15);}
+    66%{transform:translate(30px,-40px) scale(0.9);}
+  }
+  @keyframes driftB{
+    0%,100%{transform:translate(0,0) scale(1);}
+    50%{transform:translate(-70px,-50px) scale(1.2);}
+  }
+  @keyframes driftC{
+    0%,100%{transform:translate(0,0) scale(1);}
+    40%{transform:translate(-50px,40px) scale(1.1);}
+    75%{transform:translate(40px,20px) scale(0.95);}
+  }
+  #nodeCanvas{position:absolute; inset:0; width:100%; height:100%; opacity:0.5; z-index:1;}
+  .grain{position:absolute; inset:0; z-index:3; opacity:0.035; pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .hero-inner{position:relative; z-index:4; display:grid; grid-template-columns:1.15fr 0.85fr; gap:56px; align-items:center; width:100%;}
   @media(max-width:900px){.hero-inner{grid-template-columns:1fr;}}
 
   .eyebrow{
@@ -105,6 +135,7 @@
     background:var(--navy-2); border:1px solid var(--line); border-radius:8px; overflow:hidden;
     box-shadow:0 30px 60px -20px rgba(0,0,0,0.5);
     opacity:0; animation:fadeUp 0.9s ease forwards; animation-delay:0.5s;
+    position:relative; z-index:4;
   }
   .panel-bar{display:flex; align-items:center; gap:7px; padding:12px 16px; background:rgba(255,255,255,0.03); border-bottom:1px solid var(--line);}
   .panel-bar span{width:9px; height:9px; border-radius:50%; background:rgba(245,247,250,0.18);}
@@ -221,7 +252,13 @@
 </header>
 
 <section class="hero">
-  <canvas id="nodeCanvas"></canvas>
+  <div class="bg-video">
+    <div class="blob blob-a"></div>
+    <div class="blob blob-b"></div>
+    <div class="blob blob-c"></div>
+    <canvas id="nodeCanvas"></canvas>
+    <div class="grain"></div>
+  </div>
   <div class="wrap hero-inner">
     <div>
       <div class="eyebrow">Available for Java / Full-Stack roles</div>
@@ -249,7 +286,7 @@
     <div class="about-grid reveal">
       <div>
         <p>Software Engineer with 1.5 years of professional experience, currently building responsive, cross-browser email systems in production while maintaining a strong foundation in <strong>Java, Spring Boot, Spring Security, and RESTful APIs</strong>.</p>
-        <p>Hands-on experience developing scalable full-stack applications — from secure authentication layers with JWT and RBAC, to distributed systems using Redis caching and Apache Kafka messaging. Comfortable across the stack with Angular on the frontend and MySQL-backed architectures on the backend.</p>
+        <p>Hands-on experience developing scalable full-stack applications — from secure authentication layers with JWT and RBAC, to business workflow systems built with Angular on the frontend and MySQL-backed architectures on the backend.</p>
         <p>Eager to contribute as a <strong>Java Developer or Full Stack Developer</strong>, with a focus on secure, high-performance, well-architected applications.</p>
       </div>
       <div class="info-card">
@@ -313,11 +350,11 @@
       </div>
       <div class="skill-card">
         <h3>Database</h3>
-        <div class="chip-row"><span class="chip">MySQL</span><span class="chip">RDBMS</span><span class="chip">ORM Mapping</span><span class="chip">Redis</span></div>
+        <div class="chip-row"><span class="chip">MySQL</span><span class="chip">RDBMS</span><span class="chip">ORM Mapping</span></div>
       </div>
       <div class="skill-card">
         <h3>Tools &amp; Infra</h3>
-        <div class="chip-row"><span class="chip">Git</span><span class="chip">GitHub</span><span class="chip">Maven</span><span class="chip">Postman</span><span class="chip">Kafka</span><span class="chip">WebSockets</span></div>
+        <div class="chip-row"><span class="chip">Git</span><span class="chip">GitHub</span><span class="chip">Maven</span><span class="chip">Postman</span><span class="chip">IntelliJ IDEA</span></div>
       </div>
     </div>
   </div>
@@ -333,38 +370,22 @@
 
     <div class="proj-card reveal">
       <div class="proj-top">
-        <h3>Multi-Vendor Marketplace &amp; Real-Time Auction System</h3>
-        <span class="proj-status">● Distributed System</span>
+        <h3>Business Management System — Java Full Stack</h3>
+        <span class="proj-status">● Full Stack</span>
       </div>
-      <p style="color:rgba(245,247,250,0.65); font-size:0.95rem;">A high-throughput, distributed full-stack marketplace with real-time bidding.</p>
+      <p style="color:rgba(245,247,250,0.65); font-size:0.95rem;">A full-stack application to streamline employee, inventory, and order management workflows.</p>
       <ul>
-        <li>Designed a high-throughput, distributed full-stack marketplace using Spring Boot RESTful APIs and an Angular SPA.</li>
-        <li>Built a responsive vendor dashboard using RxJS observables and Behavior Subjects for real-time state management.</li>
-        <li>Implemented real-time, low-latency live bidding and notifications via Spring WebSockets (STOMP) with Angular.</li>
-        <li>Extended Spring Security and JWT for multi-tenant RBAC, securing separate pathways for Admins, Vendors, and Customers.</li>
-        <li>Used Redis as a distributed caching layer to reduce database load and latency on heavy catalog queries.</li>
-        <li>Implemented Apache Kafka as an event-driven broker for background order processing and inventory updates.</li>
+        <li>Designed and developed a full-stack business management application to streamline employee, inventory, and order management workflows using Spring Boot and Angular.</li>
+        <li>Built RESTful APIs for managing employees, departments, inventory, invoices, and customer orders following clean, modular architecture.</li>
+        <li>Implemented secure authentication and role-based access control (RBAC) using Spring Security and JWT to manage Admin, Manager, and Staff access levels.</li>
+        <li>Developed a responsive Angular front end with reusable components and reactive forms for data entry, validation, and reporting.</li>
+        <li>Designed normalized relational database schemas in MySQL to efficiently manage business entities and relationships.</li>
+        <li>Used Hibernate and Spring Data JPA for efficient object-relational mapping and database interaction.</li>
+        <li>Implemented CRUD operations, search, and filtering features to support day-to-day business operations.</li>
+        <li>Tested REST APIs using Postman and followed SDLC best practices for version control and code quality.</li>
       </ul>
       <div class="tech-row">
-        <span class="tech-chip">Java</span><span class="tech-chip">Spring Boot</span><span class="tech-chip">Angular</span><span class="tech-chip">TypeScript</span><span class="tech-chip">Spring Security</span><span class="tech-chip">JWT</span><span class="tech-chip">MySQL</span><span class="tech-chip">Redis</span><span class="tech-chip">WebSockets</span><span class="tech-chip">Apache Kafka</span>
-      </div>
-    </div>
-
-    <div class="proj-card reveal">
-      <div class="proj-top">
-        <h3>E-Commerce Backend System</h3>
-        <span class="proj-status">● REST API</span>
-      </div>
-      <p style="color:rgba(245,247,250,0.65); font-size:0.95rem;">A scalable, secure backend for product, cart, and order management.</p>
-      <ul>
-        <li>Designed and developed a scalable RESTful backend using Spring Boot and MySQL following enterprise-level architecture.</li>
-        <li>Implemented secure authentication and authorization using Spring Security and JWT.</li>
-        <li>Developed REST APIs for user management, product catalog, shopping cart, and order processing.</li>
-        <li>Integrated the Stripe Payment Gateway with transactional rollback mechanisms for payment consistency.</li>
-        <li>Tested APIs using Postman and documented endpoints using Swagger, following clean, modular architecture.</li>
-      </ul>
-      <div class="tech-row">
-        <span class="tech-chip">Java</span><span class="tech-chip">Spring Boot</span><span class="tech-chip">Spring Security</span><span class="tech-chip">Hibernate</span><span class="tech-chip">JWT</span><span class="tech-chip">MySQL</span><span class="tech-chip">Stripe API</span><span class="tech-chip">Maven</span>
+        <span class="tech-chip">Java</span><span class="tech-chip">Spring Boot</span><span class="tech-chip">Spring Security</span><span class="tech-chip">Spring Data JPA</span><span class="tech-chip">Hibernate</span><span class="tech-chip">Angular</span><span class="tech-chip">TypeScript</span><span class="tech-chip">JWT</span><span class="tech-chip">MySQL</span><span class="tech-chip">Maven</span>
       </div>
     </div>
   </div>
@@ -374,33 +395,20 @@
   <div class="wrap">
     <div class="section-head reveal">
       <span class="section-num">05</span>
-      <h2>Education &amp; Certifications</h2>
+      <h2>Education</h2>
       <div class="section-line"></div>
     </div>
-    <div class="split reveal">
-      <div>
-        <h3 style="font-size:0.78rem; font-family:'IBM Plex Mono',monospace; text-transform:uppercase; letter-spacing:0.08em; color:var(--slate); margin-bottom:8px;">Education</h3>
-        <div class="edu-item">
-          <h4>B.E — Computer Science &amp; Engineering</h4>
-          <div class="sub">EGS Pillay Engineering College, Nagapattinam</div>
-          <span class="date">Jun 2020 — Apr 2024</span>
-        </div>
-        <div class="edu-item">
-          <h4>SSLC &amp; HSC — Maths &amp; Computer Science</h4>
-          <div class="sub">Government Higher Secondary School, Sankaranpandal</div>
-          <span class="date">Jun 2017 — Apr 2020</span>
-        </div>
+    <div class="reveal" style="max-width:640px;">
+      <h3 style="font-size:0.78rem; font-family:'IBM Plex Mono',monospace; text-transform:uppercase; letter-spacing:0.08em; color:var(--slate); margin-bottom:8px;">Education</h3>
+      <div class="edu-item">
+        <h4>B.E — Computer Science &amp; Engineering</h4>
+        <div class="sub">EGS Pillay Engineering College, Nagapattinam</div>
+        <span class="date">Jun 2020 — Apr 2024</span>
       </div>
-      <div>
-        <h3 style="font-size:0.78rem; font-family:'IBM Plex Mono',monospace; text-transform:uppercase; letter-spacing:0.08em; color:var(--slate); margin-bottom:8px;">Certifications</h3>
-        <div class="cert-item">
-          <div class="cert-badge">01</div>
-          <div><h4>Full Stack Development</h4><div class="sub">Besant Technologies</div></div>
-        </div>
-        <div class="cert-item">
-          <div class="cert-badge">02</div>
-          <div><h4>Data Structures and Algorithms</h4><div class="sub">Udemy</div></div>
-        </div>
+      <div class="edu-item">
+        <h4>SSLC &amp; HSC — Maths &amp; Computer Science</h4>
+        <div class="sub">Government Higher Secondary School, Sankaranpandal</div>
+        <span class="date">Jun 2017 — Apr 2020</span>
       </div>
     </div>
   </div>
@@ -480,7 +488,7 @@
   }
   setTimeout(() => typeLine(0), 900);
 
-  // node network canvas
+  // node network canvas — drifting particles layered over animated gradient blobs
   const canvas = document.getElementById('nodeCanvas');
   const ctx = canvas.getContext('2d');
   let W, H, nodes = [];
@@ -490,11 +498,11 @@
   }
   function initNodes(){
     nodes = [];
-    const count = Math.min(46, Math.floor(W/40));
+    const count = Math.min(60, Math.floor(W/32));
     for(let i=0;i<count;i++){
       nodes.push({
         x: Math.random()*W, y: Math.random()*H,
-        vx: (Math.random()-0.5)*0.25, vy: (Math.random()-0.5)*0.25,
+        vx: (Math.random()-0.5)*0.3, vy: (Math.random()-0.5)*0.3,
         r: Math.random()*1.6+0.8
       });
     }
@@ -528,8 +536,6 @@
   }
   window.addEventListener('resize', () => { resize(); initNodes(); });
   resize(); initNodes(); draw();
-
-  // smooth nav underline / active state omitted for simplicity
 </script>
 </body>
 </html>
